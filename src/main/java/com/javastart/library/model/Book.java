@@ -1,6 +1,6 @@
-package com.javastart.library;
+package com.javastart.library.model;
 
-class Book {
+public class Book {
     String title;
     String author;
     int releaseDate;
@@ -8,8 +8,8 @@ class Book {
     String publisher;
     String isbn;
 
-    Book(String title, String author, int releaseDate,
-         int pages, String publisher, String isbn) {
+    public Book(String title, String author, int releaseDate,
+                int pages, String publisher, String isbn) {
         this(title, author, releaseDate, pages, publisher);
         this.isbn = isbn;
     }
