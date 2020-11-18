@@ -21,7 +21,7 @@ public class LibraryControl {
      */
     public void controlLoop() {
         int option;
-        
+
         do {
             printOptions();
             option = dataReader.getInt();
@@ -56,7 +56,7 @@ public class LibraryControl {
     private void printBooks() {
         library.printBooks();
     }
-    
+
     private void exit() {
         System.out.println("Koniec programu, papa!");
         // zamykamy strumień wejścia
