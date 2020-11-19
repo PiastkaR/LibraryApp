@@ -13,3 +13,6 @@ g
 7src/main/java/com/javastart/library/app/LibraryApp.java,c\3\c397b14f90490ab0ee2d178823d83df335a8c378
 k
 ;src/main/java/com/javastart/library/app/LibraryControl.java,0\9\0923ee4815101b87c79eff3e115bb20c14a0a595
+:
+
+.gitignore,a\5\a5cc2925ca8258af241be7e5b0381edf30266302
