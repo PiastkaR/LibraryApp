@@ -1,14 +1,14 @@
 package com.javastart.library.model;
 
-public class Publication {
-    private int year;
+class Publication {
     private String title;
     private String publisher;
+    private int year;
 
-    Publication(int year, String title, String publisher) {
-        this.year = year;
+    Publication(String title, String publisher, int year) {
         this.title = title;
         this.publisher = publisher;
+        this.year = year;
     }
 
     int getYear() {
@@ -33,5 +33,8 @@ public class Publication {
 
     void setPublisher(String publisher) {
         this.publisher = publisher;
+    }
+
+    public void printInfo() {
     }
 }
