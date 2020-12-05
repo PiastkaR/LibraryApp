@@ -16,3 +16,7 @@ k
 :
 
 .gitignore,a\5\a5cc2925ca8258af241be7e5b0381edf30266302
+g
+7src/main/java/com/javastart/library/model/Magazine.java,7\8\7849c71e393ab0079af67ed3ad7aaf831b8c1af1
+j
+:src/main/java/com/javastart/library/model/Publication.java,6\7\679b886e07927871a93632a0fd4ba7e9fa8acd89
