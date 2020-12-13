@@ -22,3 +22,7 @@ j
 :src/main/java/com/javastart/library/model/Publication.java,6\7\679b886e07927871a93632a0fd4ba7e9fa8acd89
 c
 3src/main/java/com/javastart/library/app/Option.java,f\1\f113cc82424475dd29882fe702644d458971733c
+x
+Hsrc/main/java/com/javastart/library/exception/NoSuchOptionException.java,e\e\eee6f434deb6314967b5ee0232472e837baca3f4
+j
+:src/main/java/com/javastart/library/io/ConsolePrinter.java,a\7\a77a0f270be679d114cccf309f3484260504a679
