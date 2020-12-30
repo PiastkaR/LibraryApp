@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 public class DataReader {
     private Scanner sc = new Scanner(System.in);
-    private ConsolePrinter consolePrinter = new ConsolePrinter();
+    private ConsolePrinter consolePrinter;
 
     public DataReader(ConsolePrinter consolePrinter) {
         this.consolePrinter = consolePrinter;
@@ -23,6 +23,9 @@ public class DataReader {
         } finally {
             sc.nextLine();
         }
+    }
+    public String getString() {
+        return sc.nextLine();
     }
 
     public Book readAndCreateBook() {
