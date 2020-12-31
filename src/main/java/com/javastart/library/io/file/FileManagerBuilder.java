@@ -13,10 +13,12 @@ public class FileManagerBuilder {
         this.dataReader = dataReader;
     }
 
-    public FileManager build() {
+    public FileManager build() { // tutaj File Manager jako polimorfizm - bedzie mozna zwracac wiecej typow z buildzie!
         consolePrinter.printLine("Choose data format: ");
         FileType fileType = getFileType();
         switch (fileType) {
+            case CSV:
+                return new CsvFileManager();
             case SERIAL:
                 return new SerializableFileManager();
             default:

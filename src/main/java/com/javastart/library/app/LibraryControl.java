@@ -2,6 +2,7 @@ package com.javastart.library.app;
 
 import com.javastart.library.exception.DataExportException;
 import com.javastart.library.exception.DataImportException;
+import com.javastart.library.exception.InvalidDataException;
 import com.javastart.library.exception.NoSuchOptionException;
 import com.javastart.library.io.ConsolePrinter;
 import com.javastart.library.io.DataReader;
@@ -25,10 +26,10 @@ public class LibraryControl {
         fileManager = new FileManagerBuilder(printer, dataReader).build();
         try {
             library = fileManager.importData();
-            printer.printLine("Zaimportowane dane z pliku");
-        } catch (DataImportException e) {
-            printer.printLine(e.getMessage());
-            printer.printLine("Zainicjowano nową bazę.");
+            printer.printLine("Data imported from file.");
+        } catch (DataImportException | InvalidDataException exception) {
+            printer.printLine(exception.getMessage());
+            printer.printLine("Database initiated.");
             library = new Library();
         }
     }
@@ -56,7 +57,7 @@ public class LibraryControl {
                     exit();
                     break;
                 default:
-                    printer.printLine("Nie ma takiej opcji, wprowadź ponownie: ");
+                    printer.printLine("No such an option, choose another one: ");
             }
         } while (option != Option.EXIT);
     }
@@ -69,7 +70,7 @@ public class LibraryControl {
                 option = Option.createFromInt(dataReader.getInt());
                 optionOk = true;
             } catch (NoSuchOptionException e) {
-                printer.printLine(e.getMessage() + ", podaj ponownie:");
+                printer.printLine(e.getMessage() + ", give another:");
             } catch (InputMismatchException ignored) {
                 printer.printLine("Wprowadzono wartość, która nie jest liczbą, podaj ponownie:");
             }
@@ -79,7 +80,7 @@ public class LibraryControl {
     }
 
     private void printOptions() {
-        printer.printLine("Wybierz opcję: ");
+        printer.printLine("Choose option: ");
         for (Option option : Option.values()) {
             printer.printLine(option.toString());
         }
@@ -88,11 +89,11 @@ public class LibraryControl {
     private void addBook() {
         try {
             Book book = dataReader.readAndCreateBook();
-            library.addBook(book);
+            library.addPublication(book);
         } catch (InputMismatchException e) {
-            printer.printLine("Nie udało się utworzyć książki, niepoprawne dane");
+            printer.printLine("Failed to create book, incorrect data");
         } catch (ArrayIndexOutOfBoundsException e) {
-            printer.printLine("Osiągnięto limit pojemności, nie można dodać kolejnej książki");
+            printer.printLine("Limit reached, cannot add another book");
         }
     }
 
@@ -104,11 +105,11 @@ public class LibraryControl {
     private void addMagazine() {
         try {
             Magazine magazine = dataReader.readAndCreateMagazine();
-            library.addMagazine(magazine);
+            library.addPublication(magazine);
         } catch (InputMismatchException e) {
-            printer.printLine("Nie udało się utworzyć magazynu, niepoprawne dane");
+            printer.printLine("Failed to create magazine, incorrect data");
         } catch (ArrayIndexOutOfBoundsException e) {
-            printer.printLine("Osiągnięto limit pojemności, nie można dodać kolejnego magazynu");
+            printer.printLine("Limit reached, cannot add another magazine");
         }
     }
 
@@ -125,15 +126,15 @@ public class LibraryControl {
             printer.printLine(e.getMessage());
         }
         dataReader.close();
-        printer.printLine("Koniec programu, papa!");
+        printer.printLine("End of program!");
     }
 
     private enum Option {
-        EXIT(0, "Wyjście z programu"),
-        ADD_BOOK(1, "Dodanie książki"),
-        ADD_MAGAZINE(2,"Dodanie magazynu/gazety"),
-        PRINT_BOOKS(3, "Wyświetlenie dostępnych książek"),
-        PRINT_MAGAZINES(4, "Wyświetlenie dostępnych magazynów/gazet");
+        EXIT(0, "Exit program"),
+        ADD_BOOK(1, "Add book"),
+        ADD_MAGAZINE(2, "Add magazine/ newspaper"),
+        PRINT_BOOKS(3, "Show available books"),
+        PRINT_MAGAZINES(4, "Show available magazines/ newspapers");
 
         private int value;
         private String description;
@@ -151,8 +152,8 @@ public class LibraryControl {
         static Option createFromInt(int option) throws NoSuchOptionException {
             try {
                 return Option.values()[option];
-            } catch(ArrayIndexOutOfBoundsException e) {
-                throw new NoSuchOptionException("Brak opcji o id " + option);
+            } catch (ArrayIndexOutOfBoundsException e) {
+                throw new NoSuchOptionException("No option of ID " + option);
             }
         }
     }
