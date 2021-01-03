@@ -113,15 +113,39 @@ public class LibraryControl {
         }
     }
 
+    private void deleteMagazine() {
+        try {
+            Magazine magazine = dataReader.readAndCreateMagazine();
+            if (library.removePublication(magazine))
+                printer.printLine("Magazine deleted.");
+            else
+                printer.printLine("No such magazine.");
+        } catch (InputMismatchException e) {
+            printer.printLine("Incorrect data for magazine.");
+        }
+    }
+
     private void printMagazines() {
         Publication[] publications = library.getPublications();
         printer.printMagazines(publications);
     }
 
+    private void deleteBook() {
+        try {
+            Book book = dataReader.readAndCreateBook();
+            if (library.removePublication(book))
+                printer.printLine("book deleted.");
+            else
+                printer.printLine("No such a book.");
+        } catch (InputMismatchException e) {
+            printer.printLine("Incorrect data for book.");
+        }
+    }
+
     private void exit() {
         try {
             fileManager.exportData(library);
-            printer.printLine("Export danych do pliku zakończony powodzeniem");
+            printer.printLine("Export of data to file succeeded!");
         } catch (DataExportException e) {
             printer.printLine(e.getMessage());
         }

@@ -40,3 +40,9 @@ i
 9src/main/java/com/javastart/library/io/file/FileType.java,6\c\6c0868973a5994efef186dd9433f0992c006653f
 x
 Hsrc/main/java/com/javastart/library/io/file/SerializableFileManager.java,e\4\e42cfcbeb231a2c95a1050692ebf58606806642e
+w
+Gsrc/main/java/com/javastart/library/exception/InvalidDataException.java,2\a\2a0f0798d7e20c30fc7e5609c9fca4ea59f2557a
+o
+?src/main/java/com/javastart/library/io/file/CsvFileManager.java,6\1\61203bef08e6d0c28f5f4d9f8ffee3ee842dd7a4
+;
+Library.csv,c\2\c2433efa59d2f5e53856fb79a1b7ce23dcfe6db8
