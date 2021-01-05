@@ -14,27 +14,27 @@ public abstract class Publication implements Serializable {
         this.year = year;
     }
 
-    int getYear() {
+    public int getYear() {
         return year;
     }
 
-    void setYear(int year) {
+    public void setYear(int year) {
         this.year = year;
     }
 
-    String getTitle() {
+    public String getTitle() {
         return title;
     }
 
-    void setTitle(String title) {
+    public void setTitle(String title) {
         this.title = title;
     }
 
-    String getPublisher() {
+    public String getPublisher() {
         return publisher;
     }
 
-    void setPublisher(String publisher) {
+    public void setPublisher(String publisher) {
         this.publisher = publisher;
     }
 
@@ -59,4 +59,9 @@ public abstract class Publication implements Serializable {
     public int hashCode() {
         return Objects.hash(title, publisher, year);
     }
+
+//    @Override
+//    public int compareTo(Publication publication) {
+//        return title.compareTo(publication.getTitle());
+//    }
 }
