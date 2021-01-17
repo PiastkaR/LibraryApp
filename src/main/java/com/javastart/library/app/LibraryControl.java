@@ -1,20 +1,15 @@
 package com.javastart.library.app;
 
-import com.javastart.library.exception.DataExportException;
-import com.javastart.library.exception.DataImportException;
-import com.javastart.library.exception.InvalidDataException;
-import com.javastart.library.exception.NoSuchOptionException;
+import com.javastart.library.exception.*;
 import com.javastart.library.io.ConsolePrinter;
 import com.javastart.library.io.DataReader;
 import com.javastart.library.io.file.FileManager;
 import com.javastart.library.io.file.FileManagerBuilder;
 import com.javastart.library.model.Book;
 import com.javastart.library.model.Library;
+import com.javastart.library.model.LibraryUser;
 import com.javastart.library.model.Magazine;
-import com.javastart.library.model.Publication;
-import com.javastart.library.model.comparator.AlphabeticalTitleComparator;
 
-import java.util.Arrays;
 import java.util.InputMismatchException;
 
 public class LibraryControl {
@@ -55,6 +50,10 @@ public class LibraryControl {
                 case PRINT_MAGAZINES:
                     printMagazines();
                     break;
+                case ADD_USER:
+                    addUser();
+                case PRINT_USERS:
+                    printUsers();
                 case EXIT:
                     exit();
                     break;
@@ -74,7 +73,7 @@ public class LibraryControl {
             } catch (NoSuchOptionException e) {
                 printer.printLine(e.getMessage() + ", give another:");
             } catch (InputMismatchException ignored) {
-                printer.printLine("Wprowadzono wartość, która nie jest liczbą, podaj ponownie:");
+                printer.printLine("Wrong value give another:");
             }
         }
 
@@ -92,7 +91,7 @@ public class LibraryControl {
         try {
             Book book = dataReader.readAndCreateBook();
             library.addPublication(book);
-        } catch (InputMismatchException e) {
+        } catch (InputMismatchException | PublicationAlreadyExistsException e) {
             printer.printLine("Failed to create book, incorrect data");
         } catch (ArrayIndexOutOfBoundsException e) {
             printer.printLine("Limit reached, cannot add another book");
@@ -100,18 +99,26 @@ public class LibraryControl {
     }
 
     private void printBooks() {
-        Publication[] publications = getSortedPublication();
-        printer.printBooks(publications);
+        printer.printBooks(library.getPublications().values());
     }
 
     private void addMagazine() {
         try {
             Magazine magazine = dataReader.readAndCreateMagazine();
             library.addPublication(magazine);
-        } catch (InputMismatchException e) {
+        } catch (InputMismatchException | PublicationAlreadyExistsException e) {
             printer.printLine("Failed to create magazine, incorrect data");
         } catch (ArrayIndexOutOfBoundsException e) {
             printer.printLine("Limit reached, cannot add another magazine");
+        }
+    }
+
+    private void addUser() {
+        LibraryUser libraryUser = dataReader.createLibraryUser();
+        try {
+            library.addUser(libraryUser);
+        } catch (UserAlreadyExistException e) {
+            printer.printLine(e.getMessage());
         }
     }
 
@@ -128,21 +135,24 @@ public class LibraryControl {
     }
 
     private void printMagazines() {
-        Publication[] publications = getSortedPublication();
-        printer.printMagazines(publications);
+        printer.printMagazines(library.getPublications().values());
     }
 
-    private Publication[] getSortedPublication() {
-        Publication[] publications = library.getPublications();
-        Arrays.sort(publications, new AlphabeticalTitleComparator());
-        return publications;
+    private void printUsers() {
+        printer.printUsers(library.getUsers().values());
     }
+
+//    private Publication[] getSortedPublication() {
+//        Publication[] publications = library.getPublications();
+//        Arrays.sort(publications, new AlphabeticalTitleComparator());
+//        return publications;
+//    }
 
     private void deleteBook() {
         try {
             Book book = dataReader.readAndCreateBook();
             if (library.removePublication(book))
-                printer.printLine("book deleted.");
+                printer.printLine("Book deleted.");
             else
                 printer.printLine("No such a book.");
         } catch (InputMismatchException e) {
@@ -166,7 +176,9 @@ public class LibraryControl {
         ADD_BOOK(1, "Add book"),
         ADD_MAGAZINE(2, "Add magazine/ newspaper"),
         PRINT_BOOKS(3, "Show available books"),
-        PRINT_MAGAZINES(4, "Show available magazines/ newspapers");
+        PRINT_MAGAZINES(4, "Show available magazines/ newspapers"),
+        ADD_USER(7, "Add user"),
+        PRINT_USERS(8, "Show user");
 
         private int value;
         private String description;

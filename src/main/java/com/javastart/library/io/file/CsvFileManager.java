@@ -1,79 +1,111 @@
 package com.javastart.library.io.file;
 
-import com.javastart.library.exception.DataExportException;
-import com.javastart.library.exception.DataImportException;
-import com.javastart.library.exception.InvalidDataException;
-import com.javastart.library.model.Book;
-import com.javastart.library.model.Library;
-import com.javastart.library.model.Magazine;
-import com.javastart.library.model.Publication;
+import com.javastart.library.exception.*;
+import com.javastart.library.model.*;
 
 import java.io.*;
+import java.util.Collection;
 import java.util.Scanner;
 
 public class CsvFileManager implements FileManager {
-    private static final String FILE_NAME = "Library.csv";
+    private static final String PUBLICATIONS_FILE_NAME = "Library.csv";
+    private static final String USERS_FILE_NAME = "Library_users.csv";
 
     @Override
     public Library importData() {
         Library library = new Library();
-        try (var fileReader = new Scanner(new File(FILE_NAME))) {
+        importPublications(library);
+        importUsers(library);
+        return library;
+    }
+
+    @Override
+    public void exportData(Library library) {
+        exportPublications(library);
+        exportUsers(library);
+    }
+
+    private void exportPublications(Library library) {
+        Collection<Publication> publications = library.getPublications().values();
+        exportToCsv(publications, PUBLICATIONS_FILE_NAME);
+    }
+
+    private void exportUsers(Library library) {
+        Collection<LibraryUser> users = library.getUsers().values();
+        exportToCsv(users, USERS_FILE_NAME);
+    }
+
+    private <T extends CsvConvertible> void exportToCsv(Collection<T> collection, String fileName) {
+        try (FileWriter fileWriter = new FileWriter(fileName);
+             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
+            for (T element : collection) {
+                bufferedWriter.write(element.toCsv());
+                bufferedWriter.newLine();
+            }
+        } catch (IOException e) {
+            throw new DataExportException("Error while writing the file: " + fileName);
+        }
+    }
+    private Publication createObjectFromString(String csvText) {
+        String[] split = csvText.split(";");
+        String type = split[0];
+        if(Book.TYPE.equals(type)) {
+            return createBook(split);
+        } else if(Magazine.TYPE.equals(type)) {
+            return createMagazine(split);
+        }
+        throw new InvalidDataException("Uknown file type: " + type);
+    }
+
+    private Book createBook(String[] data) {
+        String title = data[1];
+        String publisher = data[2];
+        int year = Integer.valueOf(data[3]);
+        String author = data[4];
+        int pages = Integer.valueOf(data[5]);
+        String isbn = data[6];
+        return new Book(title, author, year, pages, publisher, isbn);
+    }
+
+    private Magazine createMagazine(String[] data) {
+        String title = data[1];
+        String publisher = data[2];
+        int year = Integer.valueOf(data[3]);
+        int month = Integer.valueOf(data[4]);
+        int day = Integer.valueOf(data[5]);
+        String language = data[6];
+        return new Magazine(title, publisher, language, year, month, day);
+    }
+
+    private void importPublications(Library library) {
+        try (Scanner fileReader = new Scanner(new File(PUBLICATIONS_FILE_NAME))) {
             while (fileReader.hasNextLine()) {
                 String line = fileReader.nextLine();
                 Publication publication = createObjectFromString(line);
                 library.addPublication(publication);
             }
-        } catch (FileNotFoundException exception) {
-            throw new DataImportException("Error while importing a file: " + FILE_NAME);
+        } catch (FileNotFoundException | PublicationAlreadyExistsException e) {
+            throw new DataImportException("No file: " + PUBLICATIONS_FILE_NAME);
         }
-        return library;
     }
 
-    private Publication createObjectFromString(String csvLine) {
-        String[] split = csvLine.split(";");
-        String type = split[0];
-        if (Book.TYPE.equals(type)) {
-            return createBook(split);
-        } else if (Magazine.TYPE.equals(type)) {
-            return createMagazine(split);
-        }
-        throw new InvalidDataException("Unknown publication type: " + type);
-    }
-
-    private Publication createMagazine(String[] data) {
-        String title = data[1];
-        String publisher = data[2];
-        int year = Integer.parseInt(data[3]);
-        int month = Integer.parseInt(data[4]);
-        int day = Integer.parseInt(data[5]);
-        String language = data[6];
-
-        return new Magazine(title, publisher, language, year,month, day);
-    }
-
-    private Publication createBook(String[] data) {
-        String title = data[1];
-        String publisher = data[2];
-        int year = Integer.parseInt(data[3]);
-        String author = data[4];
-        int pages = Integer.parseInt(data[5]);
-        String isb = data[6];
-        return new Book(title, author, year, pages, publisher, isb);
-    }
-
-    @Override
-    public void exportData(Library library) {
-        Publication[] publications = library.getPublications();
-        try (
-                var fileWriter = new FileWriter(FILE_NAME);
-                var bufferedWriter = new BufferedWriter(fileWriter);
-        ) {
-            for (Publication publication : publications) {
-                bufferedWriter.write(publication.toCsv());
-                bufferedWriter.newLine();
+    private void importUsers(Library library) {
+        try (Scanner fileReader = new Scanner(new File(USERS_FILE_NAME))) {
+            while (fileReader.hasNextLine()) {
+                String line = fileReader.nextLine();
+                LibraryUser libUser = createUserFromString(line);
+                library.addUser(libUser);
             }
-        } catch (IOException exception) {
-            throw new DataExportException("Error while exporting a file: " + FILE_NAME);
+        } catch (FileNotFoundException | UserAlreadyExistException e) {
+            throw new DataImportException("No file: " + USERS_FILE_NAME);
         }
+    }
+
+    private LibraryUser createUserFromString(String csvText) {
+        String[] split = csvText.split(";");
+        String firstName = split[0];
+        String lastName = split[1];
+        String pesel = split[2];
+        return new LibraryUser(firstName, lastName, pesel);
     }
 }
