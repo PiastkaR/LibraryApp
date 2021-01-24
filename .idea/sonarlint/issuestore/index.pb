@@ -52,3 +52,13 @@ x
 Hsrc/main/java/com/javastart/library/model/comparator/DateComparator.java,f\2\f2483ff986f12131c0e279209b95def90bc1e802
 9
 	Library.o,b\f\bf3da2fca2278873aebd20a2e77f61191d2761ab
+„
+Tsrc/main/java/com/javastart/library/exception/PublicationAlreadyExistsException.java,d\6\d65702417666bb9cf813537c45410f1656c94a43
+|
+Lsrc/main/java/com/javastart/library/exception/UserAlreadyExistException.java,9\0\90ff896a5a17c2d04cc461117ff2222cf1479639
+j
+:src/main/java/com/javastart/library/model/LibraryUser.java,e\c\ec1c5beb87ce7865faffdb0cb32445fadd97ec72
+c
+3src/main/java/com/javastart/library/model/User.java,b\7\b7cd8a410c0b17b83018f378e0d3443126b17ae2
+m
+=src/main/java/com/javastart/library/model/CsvConvertible.java,d\7\d749097d9678c2c1ce47c9aa37046c8d8cb4495b
