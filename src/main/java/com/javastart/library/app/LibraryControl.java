@@ -6,7 +6,6 @@ import com.javastart.library.io.DataReader;
 import com.javastart.library.io.file.FileManager;
 import com.javastart.library.io.file.FileManagerBuilder;
 import com.javastart.library.model.*;
-import com.javastart.library.model.comparator.AlphabeticalTitleComparator;
 
 import java.util.Comparator;
 import java.util.InputMismatchException;
@@ -103,7 +102,8 @@ public class LibraryControl {
 
     private void printBooks() {
         printer.printBooks(library.getSortedPublications(
-                (p1, p2) -> p1.getTitle().compareToIgnoreCase(p2.getTitle()))
+                Comparator.comparing(Publication::getTitle,String.CASE_INSENSITIVE_ORDER)
+               )
         );
     }
 
@@ -141,7 +141,8 @@ public class LibraryControl {
 
     private void printMagazines() {
         printer.printMagazines(library.getSortedPublications(
-                (p1,p2) -> p1.getTitle().compareToIgnoreCase(p2.getTitle()))
+                Comparator.comparing(Publication::getTitle, String.CASE_INSENSITIVE_ORDER)
+                )
         );
     }
 
