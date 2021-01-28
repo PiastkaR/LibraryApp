@@ -5,7 +5,6 @@ import com.javastart.library.model.*;
 
 import java.io.*;
 import java.util.Collection;
-import java.util.Scanner;
 
 public class CsvFileManager implements FileManager {
     private static final String PUBLICATIONS_FILE_NAME = "Library.csv";
@@ -36,8 +35,8 @@ public class CsvFileManager implements FileManager {
     }
 
     private <T extends CsvConvertible> void exportToCsv(Collection<T> collection, String fileName) {
-        try (FileWriter fileWriter = new FileWriter(fileName);
-             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
+        try (var fileWriter = new FileWriter(fileName);
+             var bufferedWriter = new BufferedWriter(fileWriter)) {
             for (T element : collection) {
                 bufferedWriter.write(element.toCsv());
                 bufferedWriter.newLine();
@@ -54,7 +53,7 @@ public class CsvFileManager implements FileManager {
         } else if(Magazine.TYPE.equals(type)) {
             return createMagazine(split);
         }
-        throw new InvalidDataException("Uknown file type: " + type);
+        throw new InvalidDataException("Unknown file type: " + type);
     }
 
     private Book createBook(String[] data) {
@@ -78,25 +77,33 @@ public class CsvFileManager implements FileManager {
     }
 
     private void importPublications(Library library) {
-        try (Scanner fileReader = new Scanner(new File(PUBLICATIONS_FILE_NAME))) {
-            while (fileReader.hasNextLine()) {
-                String line = fileReader.nextLine();
-                Publication publication = createObjectFromString(line);
-                library.addPublication(publication);
-            }
-        } catch (FileNotFoundException | PublicationAlreadyExistsException e) {
-            throw new DataImportException("No file: " + PUBLICATIONS_FILE_NAME);
+        try (var bufferedReader = new BufferedReader(new FileReader(PUBLICATIONS_FILE_NAME))) {
+            bufferedReader.lines()
+                    .map(this::createObjectFromString)
+                    .forEach(publication -> {
+                        try {
+                            library.addPublication(publication);
+                        } catch (PublicationAlreadyExistsException e) {
+                            throw new DataImportException("No file: " + PUBLICATIONS_FILE_NAME);
+                        }
+                    });
+        } catch (IOException exception) {
+            exception.printStackTrace();
         }
     }
 
     private void importUsers(Library library) {
-        try (Scanner fileReader = new Scanner(new File(USERS_FILE_NAME))) {
-            while (fileReader.hasNextLine()) {
-                String line = fileReader.nextLine();
-                LibraryUser libUser = createUserFromString(line);
-                library.addUser(libUser);
-            }
-        } catch (FileNotFoundException | UserAlreadyExistException e) {
+        try (var bufferedReader = new BufferedReader(new FileReader(USERS_FILE_NAME))) {
+            bufferedReader.lines()
+                    .map(this::createUserFromString)
+                    .forEach(user -> {
+                        try {
+                            library.addUser(user);
+                        } catch (UserAlreadyExistException e) {
+                            e.printStackTrace();
+                        }
+                    });
+            } catch (IOException e) {
             throw new DataImportException("No file: " + USERS_FILE_NAME);
         }
     }
