@@ -2,6 +2,7 @@ package com.javastart.library.model.comparator;
 
 import com.javastart.library.model.Publication;
 
+import java.time.Year;
 import java.util.Comparator;
 
 public class DateComparator implements Comparator<Publication> {
@@ -13,8 +14,8 @@ public class DateComparator implements Comparator<Publication> {
             return 1;
         else if (o2 == null)
             return -1;
-        Integer i1 = o1.getYear();
-        Integer i2 = o2.getYear();
+        Year i1 = o1.getYear();
+        Year i2 = o2.getYear();
         return -i1.compareTo(i2);
 
     }
